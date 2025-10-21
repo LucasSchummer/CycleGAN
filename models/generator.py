@@ -1,7 +1,6 @@
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from layers import ConvInNormReluLayer, ResidualLayer, UpConvInNormReluLayer
+from models.layers import ConvInNormReluLayer, ResidualLayer, UpConvInNormReluLayer
 
 
 
@@ -40,19 +39,3 @@ class Generator(nn.Module):
         out = F.tanh(out)
         return out
 
-# batch_size = 16
-# img_size = 128
-
-# dummy = torch.randn(batch_size, 3, img_size, img_size)
-# r1 = ConvInNormReluLayer(in_channels=3, out_channels=64)
-# c1 = ConvInNormReluLayer(in_channels=3, out_channels=64, kernel_size=7, stride=1, padding="same")
-# out = c1(dummy)
-
-# dummy = torch.randn(batch_size, 64, 32, 32)
-# u1 = UpConvInNormReluLayer(64, 64)
-# out = u1(dummy)
-
-# model = Generator()
-# out = model(dummy)
-
-# print(out.shape)

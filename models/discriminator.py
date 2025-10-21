@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from layers import ConvInNormLeakyReluLayer
+from models.layers import ConvInNormLeakyReluLayer
 
 class Discriminator(nn.Module):
 
@@ -22,11 +22,3 @@ class Discriminator(nn.Module):
         out = self.c4(out)
         out = self.c5(out)
         return out
-
-batch_size = 16
-img_size = 128
-dummy = torch.randn(batch_size, 3, img_size, img_size)
-#r1 = ConvInNormLeakyReluLayer(in_channels=3, out_channels=64)
-model = Discriminator()
-out = model(dummy)
-print(out.shape)
