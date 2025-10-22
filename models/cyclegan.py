@@ -100,8 +100,8 @@ class CycleGAN(nn.Module):
     def get_fake_images(self, batch):
 
         with torch.no_grad():
-            real_A = batch["A"]
-            real_B = batch["B"]
+            real_A = batch["A"].to(self.device)
+            real_B = batch["B"].to(self.device)
 
             fake_B = self.G_AB(real_A)
             fake_A = self.G_BA(real_B)
