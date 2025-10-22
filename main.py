@@ -8,7 +8,7 @@ from utils.dataset import UnpairedDataset
 from utils.checkpoint_manager import CheckpointManager
 
 
-epochs = 10
+epochs = 50
 lr = 2e-4
 lbda = 10
 n_steps_log = 10
@@ -16,6 +16,9 @@ n_epochs_log = 1
 n_epochs_checkpoint = 2
 
 run_name = "HorseZebra_1"
+
+start_from_checkpoint = True
+checkpoint = "checkpoints/HorseZebra_1/13_4676_checkpoint.pth"
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using device:", device)
@@ -26,8 +29,12 @@ dataloader = DataLoader(dataset, batch_size=4, shuffle=True)
 writer = SummaryWriter(log_dir=f"runs/{run_name}")
 checkpoint_manager = CheckpointManager(f"checkpoints/{run_name}", max_checkpoints=5)
 
-step = 0
-for epoch in range(epochs):
+if start_from_checkpoint:
+    epoch_start, step = checkpoint_manager.load(model, checkpoint, device)
+else:
+    epoch_start, step = 0, 0
+
+for epoch in range(epoch_start, epochs):
     start_time = time.time()
         
     # tqdm progress bar for batches in the epoch
@@ -52,6 +59,7 @@ for epoch in range(epochs):
             writer.add_scalar("Loss/D/D_A", metrics["loss_D_A"], step)
             writer.add_scalar("Loss/D/D_B", metrics["loss_D_B"], step)
             writer.add_scalar("Loss/Cycle", metrics["loss_cyc"], step)
+            writer.add_scalar("Loss/Identity", metrics["loss_id"], step)
             writer.add_scalar("Discriminator_A/Real", metrics["D_A_real"], step)
             writer.add_scalar("Discriminator_A/Fake", metrics["D_A_fake"], step)
             writer.add_scalar("Discriminator_B/Real", metrics["D_B_real"], step)
@@ -59,12 +67,12 @@ for epoch in range(epochs):
 
         step += 1
 
-    if (epoch + 1) % n_epochs_log == 0:
+    if epoch % n_epochs_log == 0:
         fake_A, fake_B = model.get_fake_images(batch)
         writer.add_images("Fake/B_from_A", (fake_B + 1) / 2, epoch)
         writer.add_images("Fake/A_from_B", (fake_A + 1) / 2, epoch)
 
-    if (epoch + 1) % n_epochs_checkpoint == 0:
+    if epoch % n_epochs_checkpoint == 0:
         checkpoint_manager.save(model, epoch, step)
 
     print(f"Epoch [{epoch+1}/{epochs}] completed in {time.time() - start_time:.2f}s")
