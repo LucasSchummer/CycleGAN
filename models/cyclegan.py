@@ -47,9 +47,10 @@ class CycleGAN(nn.Module):
 
         loss_G_AB = F.mse_loss(pred_fake_B, torch.ones_like(pred_fake_B))
         loss_G_BA = F.mse_loss(pred_fake_A, torch.ones_like(pred_fake_A))
+        loss_id = F.l1_loss(real_A, fake_B) + F.l1_loss(real_B, fake_A)
         loss_cyc = F.l1_loss(real_A, cyc_A) + F.l1_loss(real_B, cyc_B)
 
-        loss_G = loss_G_AB + loss_G_BA + self.lbda * loss_cyc
+        loss_G = loss_G_AB + loss_G_BA + self.lbda * loss_cyc + self.lbda * .5 * loss_id
 
         self.optimizer_G.zero_grad()
         loss_G.backward()
@@ -83,6 +84,7 @@ class CycleGAN(nn.Module):
             "loss_D_A": loss_D_A.item(),
             "loss_D_B": loss_D_B.item(),
             "loss_cyc": loss_cyc.item(),
+            "loss_id" : loss_id.item(),
             "D_A_real": pred_real_A.mean().item(),
             "D_A_fake": pred_fake_A.mean().item(),
             "D_B_real": pred_real_B.mean().item(),
