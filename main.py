@@ -8,12 +8,13 @@ from utils.dataset import UnpairedDataset
 from utils.checkpoint_manager import CheckpointManager
 
 
-epochs = 50
+epochs = 200
 lr = 2e-4
+batch_size = 2
 lbda = 10
 n_steps_log = 10
 n_epochs_log = 1
-n_epochs_checkpoint = 2
+n_epochs_checkpoint = 10
 
 run_name = "HorseZebra_1"
 
@@ -25,7 +26,7 @@ print("Using device:", device)
 
 model = CycleGAN(lr, lbda, device).to(device)
 dataset = UnpairedDataset("data/horse2zebra")
-dataloader = DataLoader(dataset, batch_size=4, shuffle=True)
+dataloader = DataLoader(dataset, batch_size, shuffle=True)
 writer = SummaryWriter(log_dir=f"runs/{run_name}")
 checkpoint_manager = CheckpointManager(f"checkpoints/{run_name}", max_checkpoints=5)
 
