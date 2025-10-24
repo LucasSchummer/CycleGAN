@@ -18,7 +18,7 @@ n_epochs_checkpoint = 10
 
 run_name = "HorseZebra_1"
 
-start_from_checkpoint = True
+start_from_checkpoint = False
 checkpoint = "checkpoints/HorseZebra_1/13_4676_checkpoint.pth"
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
