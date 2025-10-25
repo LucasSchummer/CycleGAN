@@ -8,7 +8,7 @@ from utils.buffer import ImageBuffer
 
 class CycleGAN(nn.Module):
 
-    def __init__(self, lr, lbda, device):
+    def __init__(self, lr=.0002, lbda=10, device="cpu"):
         super().__init__()
         
         self.D_A = Discriminator() # Discriminator for class A

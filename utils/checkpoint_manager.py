@@ -23,6 +23,7 @@ class CheckpointManager:
 
     def load(self, model, path, device):
 
+        path = os.path.join(self.save_dir, path)
         if not os.path.exists(path):
             raise FileNotFoundError(f"No checkpoint found at {path}")
         

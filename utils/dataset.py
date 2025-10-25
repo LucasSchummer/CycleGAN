@@ -14,6 +14,8 @@ class UnpairedDataset(Dataset):
         self.A_images = sorted(os.listdir(self.dir_A))
         self.B_images = sorted(os.listdir(self.dir_B))
 
+        self.mode = mode
+
         self.transform = transforms.Compose([
             transforms.Resize((img_size, img_size)),
             transforms.ToTensor(),
@@ -27,7 +29,10 @@ class UnpairedDataset(Dataset):
     def __getitem__(self, idx):
 
         img_A = Image.open(os.path.join(self.dir_A, self.A_images[idx % len(self.A_images)])).convert("RGB")
-        img_B = Image.open(os.path.join(self.dir_B, random.choice(self.B_images))).convert("RGB")
+        if self.mode == "train":
+            img_B = Image.open(os.path.join(self.dir_B, random.choice(self.B_images))).convert("RGB") # Random B image
+        else:
+            img_B = Image.open(os.path.join(self.dir_B, self.B_images[idx % len(self.B_images)])).convert("RGB") # Deterministic at test time
 
         img_A = self.transform(img_A)
         img_B = self.transform(img_B)
